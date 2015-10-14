@@ -1,0 +1,19 @@
+{
+  "name": "nightwatch-allure-adapter",
+  "version": "1.0.0",
+  "description": "Allure adapter for nightwatch framework",
+  "main": "reporter.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "allure"
+  ],
+  "devDependencies": {
+    "allure-js-commons": "^1.1.1",
+    "lodash": "^3.10.1",
+    "comment-parser": "^0.3.0"
+  },
+  "author": "Sharad Jain",
+  "license": "ISC"
+}

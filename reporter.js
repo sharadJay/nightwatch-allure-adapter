@@ -14,7 +14,7 @@ var _ = require('lodash');
 var runtimeAllure = new Runtime(allureReporter);
 
 var self = module.exports = {
-    write: function (results, options, done) {
+    write: function (results, done) {
         allureReporter.setOptions(" -o reports/allure-report" || {});
         for (var currentModule in results.modules) {
             module = results.modules[currentModule];
@@ -31,9 +31,6 @@ var self = module.exports = {
                 errorMessage: "",
                 startTimestamp: self.parseDate(module.timestamp),
                 endTimestamp: self.parseDate(module.timestamp),
-                testpath: "./tests/" + currentModule,
-                //FIXME hardcoded path for test folder, test settings should have path to test path apparently
-                tags: self.parseFileForTags(__dirname + "/tests/" + currentModule + ".js")
             }
 
             if (currentTest.skipped === currentTest.tests) {
@@ -46,7 +43,7 @@ var self = module.exports = {
                 currentTest.suiteName = testPath[testPath.length - 2];
                 currentTest.testName = testPath[testPath.length - 1];
             }
-            console.log("Test Suite start time " + currentTest.startTimestamp);
+
             allureReporter.startSuite(currentTest.suiteName, currentTest.startTimestamp);
             allureReporter.startCase(currentTest.testName, currentTest.startTimestamp);
             var previousStepTimestamp = currentTest.startTimestamp;
@@ -63,7 +60,6 @@ var self = module.exports = {
                     endTimestamp: previousStepTimestamp + (self.parseFloat(currentStep.time) * 1000),
                     totalTime: self.parseFloat(currentStep.time) * 1000
                 }
-                console.log("Current Test:" + completedStep + " start " + curCompletedStep.startTimestamp + " end: " + curCompletedStep.endTimestamp);
                 currentTest.endTimestamp = currentTest.endTimestamp + curCompletedStep.totalTime;
                 previousStepTimestamp = curCompletedStep.endTimestamp;
                 allureReporter.startStep(completedStep, curCompletedStep.startTimestamp);
@@ -94,16 +90,6 @@ var self = module.exports = {
                 allureReporter.endStep("skipped", "Step skipped", currentTest.endTimestamp);
             }
 
-            //TODO considering good number of properties switch should be used
-            if (currentTest.tags.hasOwnProperty("testcaseId")) {
-                runtimeAllure.addLabel("testId", currentTest.tags["testcaseId"])
-            }
-            if (currentTest.tags.hasOwnProperty("description")) {
-                runtimeAllure.description(currentTest.tags.description);
-            }
-
-
-            console.log("Suite end time" + currentTest.endTimestamp);
             if (currentTest.isFailure) {
                 allureReporter.endCase("failed", currentTest.errorMessage, currentTest.endTimestamp);
             } else if (currentTest.isSkipped) {
@@ -126,6 +112,7 @@ var self = module.exports = {
     parseDate: function (str) {
         return Date.parse(str);
     },
+    //FIXME file paths are incorrect, hence can not use this
     parseFileForTags: function (testfilePath) {
         var opts = {
             parsers: [
@@ -135,7 +122,6 @@ var self = module.exports = {
         };
 
         var file = fs.readFileSync(testfilePath, 'utf-8');
-        //file = path.resolve(file);
         var parsedInformation = cp(file, opts);
         var tcTags = {};
         if (parsedInformation.length > 0) {

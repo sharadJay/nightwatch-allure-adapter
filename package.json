@@ -9,10 +9,14 @@
   "keywords": [
     "allure"
   ],
-  "devDependencies": {
+  "dependencies": {
     "allure-js-commons": "^1.1.1",
     "lodash": "^3.10.1",
     "comment-parser": "^0.3.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:sharadJay/nightwatch-allure-adapter.git"
   },
   "author": "Sharad Jain",
   "license": "ISC"

@@ -62,7 +62,7 @@ var self = module.exports = {
             if (currentTest.tags.hasOwnProperty("description")) {
                 runtimeAllure.description(currentTest.tags.description);
             }
-            allureReporter.addAttachment("Reported Result", JSON.stringify(module), "application/json");
+            allureReporter.addAttachment("Reported Result", JSON.stringify(results), "application/json");
             var previousStepTimestamp = currentTest.startTimestamp;
 
             for (var completedStep in module.completed) {
@@ -80,7 +80,7 @@ var self = module.exports = {
                 currentTest.endTimestamp = currentTest.endTimestamp + curCompletedStep.totalTime;
                 previousStepTimestamp = curCompletedStep.endTimestamp;
                 allureReporter.startStep(completedStep, curCompletedStep.startTimestamp);
-                if (curCompletedStep.failures > 0 || curCompletedStep.errors > 0 || currentStep.assertions.length > 0) {
+                if (curCompletedStep.failures > 0 || curCompletedStep.errors > 0) {
                     allureReporter.endStep("failed", curCompletedStep.endTimestamp);
                     for (var assertion in currentStep.assertions) {
                         var currentAssertion = currentStep.assertions[assertion];

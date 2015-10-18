@@ -90,8 +90,8 @@ var self = module.exports = {
                                 stacktrace: currentAssertion.stacktrace
                             }
                             currentTest.errorMessage = {
-                                message: errorMessage.message,
-                                stack: errorMessage.stacktrace
+                                message: errorMessage.failure,
+                                stack: errorMessage.message + "\n" + errorMessage.failure + "\n" + errorMessage.stacktrace
                             }
                         }
                     }

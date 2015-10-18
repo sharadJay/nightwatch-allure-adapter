@@ -62,6 +62,7 @@ var self = module.exports = {
             if (currentTest.tags.hasOwnProperty("description")) {
                 runtimeAllure.description(currentTest.tags.description);
             }
+            allureReporter.addAttachment("Reported Result", JSON.stringify(module), "application/json");
             var previousStepTimestamp = currentTest.startTimestamp;
 
             for (var completedStep in module.completed) {

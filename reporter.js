@@ -80,7 +80,7 @@ var self = module.exports = {
                 currentTest.endTimestamp = currentTest.endTimestamp + curCompletedStep.totalTime;
                 previousStepTimestamp = curCompletedStep.endTimestamp;
                 allureReporter.startStep(completedStep, curCompletedStep.startTimestamp);
-                if (curCompletedStep.failures > 0 || curCompletedStep.errors > 0) {
+                if (curCompletedStep.failures > 0 || curCompletedStep.errors > 0 || currentStep.assertions.length > 0) {
                     allureReporter.endStep("failed", curCompletedStep.endTimestamp);
                     for (var assertion in currentStep.assertions) {
                         var currentAssertion = currentStep.assertions[assertion];
@@ -91,7 +91,7 @@ var self = module.exports = {
                                 stacktrace: currentAssertion.stacktrace
                             }
                             currentTest.errorMessage = {
-                                message: errorMessage.failure,
+                                message: errorMessage.failure + errorMessage.message,
                                 stack: errorMessage.message + "\n" + errorMessage.failure + "\n" + errorMessage.stacktrace
                             }
                         }

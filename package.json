@@ -1,13 +1,14 @@
 {
   "name": "nightwatch-allure-adapter",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "description": "Allure adapter for nightwatch framework",
   "main": "reporter.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
-    "allure","nightwatch"
+    "allure",
+    "nightwatch"
   ],
   "dependencies": {
     "allure-js-commons": "^1.1.1",

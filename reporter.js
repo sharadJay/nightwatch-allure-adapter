@@ -9,12 +9,11 @@ var Runtime = require("allure-js-commons/runtime");
 var fs = require("fs");
 var path = require("path");
 var cp = require("comment-parser");
-
 var _ = require('lodash');
 var runtimeAllure = new Runtime(allureReporter);
 
 var self = module.exports = {
-    write: function (results, done) {
+    write: function (results, done, testFolderPath) {
         allureReporter.setOptions(" -o reports/allure-report" || {});
         for (var currentModule in results.modules) {
             module = results.modules[currentModule];
@@ -25,12 +24,17 @@ var self = module.exports = {
                 tests: self.parse(module.tests),
                 isFailure: false,
                 isSkipped: false,
-                suiteName: "Default Suite",
+                suiteName: module.group,
                 testName: currentModule,
                 testSteps: [],
                 errorMessage: "",
                 startTimestamp: self.parseDate(module.timestamp),
                 endTimestamp: self.parseDate(module.timestamp),
+                tags: {}
+            }
+
+            if (typeof testFolderPath !== 'undefined') {
+                currentTest.tags = self.parseFileForTags(testFolderPath + currentModule + ".js");
             }
 
             if (currentTest.skipped === currentTest.tests) {
@@ -39,13 +43,26 @@ var self = module.exports = {
                 currentTest.isFailure = true;
             }
             var testPath = currentTest.testName.split("/");
+            if (currentTest.suiteName === "") {
+                currentTest.suiteName = "Default Suite"
+            }
+            if (results.hasOwnProperty("environment")) {
+                currentTest.suiteName = currentTest.suiteName + "-" + results.environment;
+            }
             if (testPath.length > 1) {
-                currentTest.suiteName = testPath[testPath.length - 2];
                 currentTest.testName = testPath[testPath.length - 1];
             }
 
             allureReporter.startSuite(currentTest.suiteName, currentTest.startTimestamp);
             allureReporter.startCase(currentTest.testName, currentTest.startTimestamp);
+            //TODO considering good number of properties switch should be used
+            if (currentTest.tags.hasOwnProperty("testcaseId")) {
+                runtimeAllure.addLabel("testId", currentTest.tags["testcaseId"])
+            }
+            if (currentTest.tags.hasOwnProperty("description")) {
+                runtimeAllure.description(currentTest.tags.description);
+            }
+            allureReporter.addAttachment("Reported Result", JSON.stringify(results), "application/json");
             var previousStepTimestamp = currentTest.startTimestamp;
 
             for (var completedStep in module.completed) {
@@ -74,8 +91,8 @@ var self = module.exports = {
                                 stacktrace: currentAssertion.stacktrace
                             }
                             currentTest.errorMessage = {
-                                message: errorMessage.message,
-                                stack: errorMessage.stacktrace
+                                message: errorMessage.failure + errorMessage.message,
+                                stack: errorMessage.message + "\n" + errorMessage.failure + "\n" + errorMessage.stacktrace
                             }
                         }
                     }

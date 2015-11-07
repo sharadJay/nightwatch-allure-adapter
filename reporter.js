@@ -13,7 +13,7 @@ var _ = require('lodash');
 var runtimeAllure = new Runtime(allureReporter);
 
 var self = module.exports = {
-    write: function (results, done, testPath) {
+    write: function (results, done, testFolderPath) {
         allureReporter.setOptions(" -o reports/allure-report" || {});
         for (var currentModule in results.modules) {
             module = results.modules[currentModule];
@@ -33,8 +33,8 @@ var self = module.exports = {
                 tags: {}
             }
 
-            if (typeof testPath !== 'undefined') {
-                currentTest.tags = self.parseFileForTags(testPath + currentModule + ".js");
+            if (typeof testFolderPath !== 'undefined') {
+                currentTest.tags = self.parseFileForTags(testFolderPath + currentModule + ".js");
             }
 
             if (currentTest.skipped === currentTest.tests) {

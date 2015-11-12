@@ -1,6 +1,6 @@
 {
   "name": "nightwatch-allure-adapter",
-  "version": "1.1.9",
+  "version": "1.2.0",
   "description": "Allure adapter for nightwatch framework",
   "main": "reporter.js",
   "scripts": {
@@ -11,7 +11,7 @@
     "nightwatch"
   ],
   "dependencies": {
-    "allure-js-commons": "^1.1.1",
+    "allure-js-commons": "^1.1.2",
     "lodash": "^3.10.1",
     "comment-parser": "^0.3.0",
     "nightwatch": "^0.8.5"

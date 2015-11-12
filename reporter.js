@@ -43,6 +43,10 @@ var self = module.exports = {
                 currentTest.isFailure = true;
             }
             var testPath = currentTest.testName.split("/");
+
+            if (currentTest.suiteName === undefined) {
+                currentTest.suiteName = testPath[testPath.length - 2];
+            }
             if (currentTest.suiteName === "") {
                 currentTest.suiteName = "Default Suite"
             }
@@ -80,6 +84,10 @@ var self = module.exports = {
                 currentTest.endTimestamp = currentTest.endTimestamp + curCompletedStep.totalTime;
                 previousStepTimestamp = curCompletedStep.endTimestamp;
                 allureReporter.startStep(completedStep, curCompletedStep.startTimestamp);
+                for( assertion in  currentStep.assertions){
+                    allureReporter.startStep(currentStep.assertions[assertion].message, curCompletedStep.startTimestamp);
+                    allureReporter.endStep("passed", curCompletedStep.endTimestamp);
+                }
                 if (curCompletedStep.failures > 0 || curCompletedStep.errors > 0) {
                     allureReporter.endStep("failed", curCompletedStep.endTimestamp);
                     for (var assertion in currentStep.assertions) {
@@ -104,7 +112,7 @@ var self = module.exports = {
 
             for (var skippedStep in module.skipped) {
                 allureReporter.startStep(module.skipped[skippedStep], currentTest.endTimestamp);
-                allureReporter.endStep("skipped", "Step skipped", currentTest.endTimestamp);
+                allureReporter.endStep("skipped", currentTest.endTimestamp);
             }
 
             if (currentTest.isFailure) {

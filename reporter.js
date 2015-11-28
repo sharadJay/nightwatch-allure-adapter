@@ -11,9 +11,10 @@ var path = require("path");
 var cp = require("comment-parser");
 var _ = require('lodash');
 var runtimeAllure = new Runtime(allureReporter);
+var find = require("find");
 
 var self = module.exports = {
-    write: function (results, done, testFolderPath) {
+    write: function (results, done, directoryPath) {
         allureReporter.setOptions(" -o reports/allure-report" || {});
         for (var currentModule in results.modules) {
             module = results.modules[currentModule];
@@ -33,8 +34,8 @@ var self = module.exports = {
                 tags: {}
             }
 
-            if (typeof testFolderPath !== 'undefined') {
-                currentTest.tags = self.parseFileForTags(testFolderPath + currentModule + ".js");
+            if (typeof directoryPath !== 'undefined') {
+                currentTest.tags = self.parseFileForTags(directoryPath + "/tests/" + currentModule + ".js");
             }
 
             if (currentTest.skipped === currentTest.tests) {
@@ -84,7 +85,7 @@ var self = module.exports = {
                 currentTest.endTimestamp = currentTest.endTimestamp + curCompletedStep.totalTime;
                 previousStepTimestamp = curCompletedStep.endTimestamp;
                 allureReporter.startStep(completedStep, curCompletedStep.startTimestamp);
-                for( assertion in  currentStep.assertions){
+                for (assertion in  currentStep.assertions) {
                     allureReporter.startStep(currentStep.assertions[assertion].message, curCompletedStep.startTimestamp);
                     allureReporter.endStep("passed", curCompletedStep.endTimestamp);
                 }
@@ -116,15 +117,31 @@ var self = module.exports = {
             }
 
             if (currentTest.isFailure) {
-                allureReporter.endCase("failed", currentTest.errorMessage, currentTest.endTimestamp);
+                if (typeof directoryPath !== 'undefined') {
+                    find.file(/\.png$/, directoryPath + "/screenshots/" + results.environment + "/" + currentModule, function (files) {
+                        files.forEach(function (file) {
+                            fs.readFile(file, function (err, data) {
+                                allureReporter.addAttachment("screenshots", data, "image/png");
+                                allureReporter.endCase("failed", currentTest.errorMessage, currentTest.endTimestamp);
+                                allureReporter.endSuite(currentTest.endTimestamp);
+                            });
+                        });
+                    });
+                } else {
+                    allureReporter.endCase("failed", currentTest.errorMessage, currentTest.endTimestamp);
+                    allureReporter.endSuite(currentTest.endTimestamp);
+                }
+
             } else if (currentTest.isSkipped) {
                 allureReporter.endCase("skipped", "No Steps Performed", currentTest.endTimestamp);
+                allureReporter.endSuite(currentTest.endTimestamp);
             }
 
             else {
                 allureReporter.endCase("passed", "", currentTest.endTimestamp);
+                allureReporter.endSuite(currentTest.endTimestamp);
             }
-            allureReporter.endSuite(currentTest.endTimestamp);
+
         }
         done();
     },

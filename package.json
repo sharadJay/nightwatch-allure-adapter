@@ -19,7 +19,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:sharadJay/nightgitwatch-allure-adapter.git"
+    "url": "git@github.com:sharadJay/nightwatch-allure-adapter.git"
   },
   "author": "Sharad Jain",
   "license": "ISC"

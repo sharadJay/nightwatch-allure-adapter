@@ -94,8 +94,6 @@ var self = module.exports = {
                     for (var assertion in currentStep.assertions) {
                         var currentAssertion = currentStep.assertions[assertion];
                         if (currentAssertion.failure != false) {
-                            console.log("Current assertion:");
-                            console.log(currentAssertion);
                             var errorMessage = {
                                 failure: currentAssertion.failure,
                                 message: currentAssertion.message,

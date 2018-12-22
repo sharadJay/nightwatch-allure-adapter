@@ -15,7 +15,7 @@
     "comment-parser": "^0.5.1",
     "find": "^0.2.9",
     "lodash": "^4.17.11",
-    "nightwatch": "^1.0.16"
+    "nightwatch": "^0.9.21",
   },
   "repository": {
     "type": "git",

@@ -94,6 +94,8 @@ var self = module.exports = {
                     for (var assertion in currentStep.assertions) {
                         var currentAssertion = currentStep.assertions[assertion];
                         if (currentAssertion.failure != false) {
+                            console.log("Current assertion:");
+                            console.log(currentAssertion);
                             var errorMessage = {
                                 failure: currentAssertion.failure,
                                 message: currentAssertion.message,
@@ -143,6 +145,14 @@ var self = module.exports = {
             }
 
         }
+
+        if ((typeof(results.failed) === 'undefined' || results.failed === 0) &&
+            (typeof(results.error) === 'undefined' || results.error === 0)) {
+            process.exit(0);
+        } else {
+            process.exit(1);
+        }
+
         done();
     },
     parse: function (str) {
@@ -187,3 +197,5 @@ var self = module.exports = {
         return tcTags;
     }
 };
+
+

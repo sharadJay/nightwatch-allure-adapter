@@ -143,15 +143,6 @@ var self = module.exports = {
             }
 
         }
-
-        if ((typeof(results.failed) === 'undefined' || results.failed === 0) &&
-            (typeof(results.error) === 'undefined' || results.error === 0)) {
-            process.exit(0);
-        } else {
-            process.exit(1);
-        }
-
-        done();
     },
     parse: function (str) {
         return _.isNaN(str) ? 0 : parseInt(str, 10);

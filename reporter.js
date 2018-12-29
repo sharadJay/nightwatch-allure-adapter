@@ -143,7 +143,6 @@ var self = module.exports = {
             }
 
         }
-        done();
     },
     parse: function (str) {
         return _.isNaN(str) ? 0 : parseInt(str, 10);
@@ -187,3 +186,5 @@ var self = module.exports = {
         return tcTags;
     }
 };
+
+
